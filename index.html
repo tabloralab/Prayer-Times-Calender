@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#142c42">
+<meta name="description" content="Daily and monthly prayer times with Hanafi and Hanbali Asr calculations.">
+<title>Prayer Times Calendar</title>
+<link rel="manifest" href="./manifest.json">
+<link rel="icon" href="./icon-192.png">
+<style>
+:root{--navy:#142c42;--green:#16866b;--light:#f2f6f5;--white:#fff;--text:#263746;--muted:#82909b;--border:#e5ebeb}
+*{box-sizing:border-box}body{margin:0;background:var(--light);color:var(--text);font-family:Arial,sans-serif}
+header{background:var(--navy);color:#fff;padding:20px 16px}.header-inner,main{max-width:1150px;margin:auto}
+.brand{font-size:23px;font-weight:bold}.subtitle{font-size:12px;color:#c4d4df;margin-top:5px}
+.header-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+main{padding:18px}.panel{background:#fff;border-radius:13px;padding:18px;margin-bottom:18px;box-shadow:0 2px 9px #00000008}
+.location-row,.date-info,.calendar-head{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.location-name{font-size:19px;font-weight:bold}.small,.status{color:var(--muted);font-size:12px;margin-top:5px}
+button,select,input{font:inherit;border:1px solid var(--border);border-radius:8px;padding:10px;background:#fff}
+button{cursor:pointer;background:var(--green);color:#fff;border:0}button.secondary{background:#eaf3f0;color:var(--green)}
+button:disabled{opacity:.5;cursor:not-allowed}.controls{display:flex;flex-wrap:wrap;gap:9px;margin-top:15px}
+.controls input{flex:1;min-width:125px}.date-info{margin-top:18px;padding-top:15px;border-top:1px solid var(--border)}
+.prayer-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-top:18px}
+.prayer{text-align:center;background:#f4f8f7;padding:16px 5px;border-radius:10px;border:1px solid transparent}
+.prayer.active{background:#e2f4ed;border-color:var(--green)}.prayer .name{font-size:13px;color:#64747d}
+.prayer .time{font-size:18px;font-weight:bold;margin-top:10px}.next-box{margin-top:16px;background:var(--navy);color:#fff;padding:15px;border-radius:10px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.next-box .small{color:#b9d4cf}.section-title{font-size:19px;font-weight:bold}.month-title{font-size:17px;font-weight:bold}
+.table-wrap{overflow-x:auto}table{width:100%;min-width:780px;border-collapse:collapse;font-size:13px}
+th{background:var(--navy);color:#fff;padding:12px 9px;text-align:center;white-space:nowrap}
+td{padding:11px 8px;text-align:center;border-bottom:1px solid var(--border);white-space:nowrap}
+tr.today{background:#e6f5ee;font-weight:bold}tr:hover{background:#f4f8f7}
+.settings-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:16px}
+.field label{display:block;font-size:12px;margin-bottom:6px;color:#687983}.field input,.field select{width:100%}
+.note{background:#fff8e8;border-left:3px solid #d9a441;padding:11px;border-radius:6px;font-size:12px;line-height:1.5;margin-top:12px}
+footer{text-align:center;padding:20px;color:var(--muted);font-size:12px}
+@media(max-width:700px){main{padding:12px}.prayer-grid{grid-template-columns:repeat(3,1fr)}.prayer .time{font-size:17px}.settings-grid{grid-template-columns:1fr}.panel{padding:14px}}
+</style>
+</head>
+<body>
+<header>
+ <div class="header-inner">
+  <div class="brand">☪ Prayer Times Calendar</div>
+  <div class="subtitle">Daily prayer schedule · Monthly calendar · Hanafi & Hanbali</div>
+  <div class="header-actions">
+   <button id="installBtn" class="secondary" hidden>＋ Install App</button>
+   <button class="secondary" onclick="enableReminders()">🔔 Enable Prayer Reminders</button>
+   <button class="secondary" onclick="exportCalendar()">📄 Export / Print PDF</button>
+  </div>
+ </div>
+</header>
+<main>
+ <section class="panel">
+  <div class="location-row">
+   <div><div class="location-name" id="locationName">Location not selected</div><div class="small" id="coordinates">Detect your location or search for a city.</div></div>
+   <button onclick="detectLocation()">◎ Detect Location</button>
+  </div>
+  <div class="controls">
+   <input id="cityInput" placeholder="City e.g. Jubail" autocomplete="address-level2">
+   <input id="countryInput" placeholder="Country e.g. Saudi Arabia" autocomplete="country-name">
+   <button onclick="searchCity()">Search City</button>
+  </div>
+ </section>
+
+ <section class="panel">
+  <div class="section-title">Today's Prayer Times</div>
+  <div class="date-info">
+   <div><strong id="gregorianDate">--</strong><div class="small">Gregorian date</div></div>
+   <div><strong id="hijriDate">--</strong><div class="small">Hijri date</div></div>
+   <div><strong id="currentClock">--:--:--</strong><div class="small">Device local time</div></div>
+  </div>
+  <div class="prayer-grid" id="prayerGrid"><div class="prayer">Select a location</div></div>
+  <div class="next-box">
+   <div><strong id="nextPrayer">Next prayer: --</strong><div class="small">Time remaining</div></div>
+   <strong id="countdown">--:--:--</strong>
+  </div>
+  <div class="status" id="todayStatus"></div>
+ </section>
+
+ <section class="panel">
+  <div class="calendar-head">
+   <div class="section-title">Monthly Prayer Calendar</div>
+   <div><button class="secondary" onclick="changeMonth(-1)">❮</button> <button class="secondary" onclick="changeMonth(1)">❯</button></div>
+  </div>
+  <div class="calendar-head">
+   <div class="month-title" id="monthTitle">Select a location</div>
+   <button class="secondary" onclick="goToday()">Today</button>
+  </div>
+  <div class="table-wrap">
+   <table id="calendarTable">
+    <thead><tr><th>Gregorian Date</th><th>Hijri Date</th><th>Fajr</th><th>Sunrise</th><th>Dhuhr</th><th>Asr</th><th>Maghrib</th><th>Isha</th></tr></thead>
+    <tbody id="calendarBody"><tr><td colspan="8">Select a location to load the calendar.</td></tr></tbody>
+   </table>
+  </div>
+  <div class="status" id="calendarStatus"></div>
+ </section>
+
+ <section class="panel">
+  <div class="section-title">Calculation & Location Settings</div>
+  <div class="settings-grid">
+   <div class="field"><label>Asr calculation</label><select id="schoolSelect" onchange="settingsChanged()"><option value="1">Hanafi (two shadow lengths)</option><option value="0">Hanbali / Standard (one shadow length)</option></select></div>
+   <div class="field"><label>Regional calculation method</label><select id="methodSelect" onchange="settingsChanged()">
+    <option value="auto">Automatic (API default)</option><option value="4">Umm Al-Qura – Makkah</option><option value="3">Muslim World League</option><option value="1">Karachi</option><option value="2">ISNA</option><option value="8">Gulf Region</option><option value="5">Egyptian Survey</option><option value="13">Turkey – Diyanet</option>
+   </select></div>
+   <div class="field"><label>Latitude</label><input id="latitude" type="number" step="any" placeholder="Latitude"></div>
+   <div class="field"><label>Longitude</label><input id="longitude" type="number" step="any" placeholder="Longitude"></div>
+  </div>
+  <div class="controls"><button onclick="applyCoordinates()">Apply Coordinates</button><button class="secondary" onclick="resetSettings()">Reset Settings</button></div>
+  <div class="note"><b>Reminder limitations:</b> Browser notifications and alarms are most reliable while this app is open. A normal web page cannot guarantee an exact Adhan alarm after it has been fully closed. Push notifications would require a separate push service. Confirm prayer times with your local mosque or official timetable.</div>
+  <div class="status" id="status">Ready.</div>
+ </section>
+</main>
+<footer>Prayer Times Calendar · Prayer calculations by AlAdhan API</footer>
+
+<script>
+const API="https://api.aladhan.com/v1";
+const prayerNames=["Fajr","Sunrise","Dhuhr","Asr","Maghrib","Isha"];
+const actualPrayers=["Fajr","Dhuhr","Asr","Maghrib","Isha"];
+let locationData=null,monthlyData=[],todayData=null;
+let currentMonth=new Date().getMonth()+1,currentYear=new Date().getFullYear();
+let deferredInstallPrompt=null,lastReminderKey="";
+
+const $=id=>document.getElementById(id);
+function status(msg){$("status").textContent=msg}
+function cleanTime(v){return String(v||"").split(" ")[0].substring(0,5)}
+function formatTime(v){
+ const p=cleanTime(v).split(":");if(p.length<2)return "--";
+ let h=Number(p[0]);const suffix=h>=12?"PM":"AM";h=h%12||12;
+ return String(h).padStart(2,"0")+":"+p[1]+" "+suffix;
+}
+function saveSettings(){localStorage.setItem("pt_school",$("schoolSelect").value);localStorage.setItem("pt_method",$("methodSelect").value)}
+function restoreSettings(){
+ $("schoolSelect").value=localStorage.getItem("pt_school")||"1";
+ $("methodSelect").value=localStorage.getItem("pt_method")||"auto";
+ try{const s=localStorage.getItem("pt_location");if(s){locationData=JSON.parse(s);showLocation()}}catch(e){localStorage.removeItem("pt_location")}
+}
+function saveLocation(){localStorage.setItem("pt_location",JSON.stringify(locationData))}
+function showLocation(){
+ $("locationName").textContent=locationData.name;
+ $("coordinates").textContent=locationData.lat.toFixed(5)+", "+locationData.lon.toFixed(5);
+ $("latitude").value=locationData.lat;$("longitude").value=locationData.lon;
+}
+function getParams(){
+ const p=new URLSearchParams({latitude:locationData.lat,longitude:locationData.lon,school:$("schoolSelect").value});
+ if($("methodSelect").value!=="auto")p.set("method",$("methodSelect").value);
+ return p.toString();
+}
+async function api(url){
+ const r=await fetch(url);if(!r.ok)throw Error("API request failed ("+r.status+")");
+ const j=await r.json();if(j.code!==200)throw Error(j.status||"Prayer-time request failed");return j.data;
+}
+async function detectLocation(){
+ if(!navigator.geolocation){alert("GPS is not supported by this browser.");return}
+ status("Getting your location…");
+ navigator.geolocation.getCurrentPosition(async pos=>{
+  const lat=pos.coords.latitude,lon=pos.coords.longitude;let name="My Location";
+  try{const r=await fetch("https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat="+lat+"&lon="+lon);const d=await r.json();const a=d.address||{};name=[a.city||a.town||a.village||a.suburb||"My Location",a.country||""].filter(Boolean).join(", ")}catch(e){}
+  locationData={lat,lon,name};saveLocation();showLocation();loadAll();
+ },err=>{status("Location unavailable. Allow GPS permission or search for your city.");alert("Unable to detect location. Please allow location access or search for your city.")},{enableHighAccuracy:true,timeout:15000});
+}
+async function searchCity(){
+ const city=$("cityInput").value.trim(),country=$("countryInput").value.trim();
+ if(!city||!country){alert("Enter both city and country.");return}
+ status("Searching city…");
+ try{
+  const r=await fetch("https://nominatim.openstreetmap.org/search?format=json&limit=1&q="+encodeURIComponent(city+", "+country));
+  const d=await r.json();if(!d.length)throw Error("City not found.");
+  locationData={lat:Number(d[0].lat),lon:Number(d[0].lon),name:city+", "+country};saveLocation();showLocation();loadAll();
+ }catch(e){status(e.message);alert(e.message)}
+}
+function applyCoordinates(){
+ const lat=Number($("latitude").value),lon=Number($("longitude").value);
+ if(!Number.isFinite(lat)||!Number.isFinite(lon)||lat < -90||lat > 90||lon < -180||lon > 180){alert("Enter valid latitude and longitude.");return}
+ locationData={lat,lon,name:"Manual coordinates"};saveLocation();showLocation();loadAll();
+}
+function resetSettings(){if(!confirm("Reset saved location and calculation settings?"))return;localStorage.removeItem("pt_location");localStorage.removeItem("pt_school");localStorage.removeItem("pt_method");location.reload()}
+function settingsChanged(){saveSettings();if(locationData)loadAll()}
+async function loadAll(){
+ if(!locationData){status("Detect your location or search for a city.");return}
+ saveSettings();status("Loading prayer times…");$("todayStatus").textContent="";
+ try{
+  const p=getParams(),now=new Date(),ds=[String(now.getDate()).padStart(2,"0"),String(now.getMonth()+1).padStart(2,"0"),now.getFullYear()].join("-");
+  const [t,m]=await Promise.all([api(`${API}/timings/${ds}?${p}`),api(`${API}/calendar/${currentYear}/${currentMonth}?${p}`)]);
+  todayData=t;monthlyData=m;displayToday();displayCalendar();status("Prayer times updated.");
+ }catch(e){status("Could not load prayer times: "+e.message);$("calendarBody").innerHTML='<tr><td colspan="8">Unable to load calendar. Check your internet connection and try again.</td></tr>'}
+}
+function displayToday(){
+ const t=todayData.timings,d=todayData.date;
+ $("gregorianDate").textContent=d.gregorian.date;
+ $("hijriDate").textContent=d.hijri.day+" "+d.hijri.month.en+" "+d.hijri.year;
+ const grid=$("prayerGrid");grid.innerHTML="";
+ prayerNames.forEach(n=>{
+  const card=document.createElement("div");card.className="prayer";card.id="card_"+n;
+  const label=document.createElement("div");label.className="name";label.textContent=n;
+  const time=document.createElement("div");time.className="time";time.textContent=formatTime(t[n]);
+  card.append(label,time);grid.append(card);
+ });
+ $("todayStatus").textContent="Calculation method: "+(todayData.meta&&todayData.meta.method?todayData.meta.method.name:"API regional default");
+ updateCountdown();
+}
+function displayCalendar(){
+ $("monthTitle").textContent=new Date(currentYear,currentMonth-1,1).toLocaleString("en",{month:"long"})+" "+currentYear;
+ const body=$("calendarBody");body.innerHTML="";
+ monthlyData.forEach(day=>{
+  const tr=document.createElement("tr"),g=day.date.gregorian,h=day.date.hijri;
+  const now=new Date(),isToday=Number(g.day)===now.getDate()&&Number(g.month.number)===now.getMonth()+1&&Number(g.year)===now.getFullYear();
+  if(isToday)tr.className="today";
+  [g.date,h.day+" "+h.month.en,day.timings.Fajr,day.timings.Sunrise,day.timings.Dhuhr,day.timings.Asr,day.timings.Maghrib,day.timings.Isha].forEach((v,i)=>{
+   const td=document.createElement("td");td.textContent=i<2?v:formatTime(v);tr.append(td);
+  });body.append(tr);
+ });
+ $("calendarStatus").textContent=monthlyData.length+" days loaded.";
+}
+function changeMonth(n){currentMonth+=n;if(currentMonth>12){currentMonth=1;currentYear++}if(currentMonth<1){currentMonth=12;currentYear--}loadAll()}
+function goToday(){const d=new Date();currentMonth=d.getMonth()+1;currentYear=d.getFullYear();loadAll()}
+function prayerDate(time,base){const a=cleanTime(time).split(":");const d=new Date(base);d.setHours(Number(a[0]),Number(a[1]),0,0);return d}
+function updateCountdown(){
+ if(!todayData)return;const now=new Date(),t=todayData.timings;let next=null,nextAt=null;
+ for(const n of actualPrayers){const x=prayerDate(t[n],now);if(x>now){next=n;nextAt=x;break}}
+ if(!next){next="Fajr";nextAt=prayerDate(t.Fajr,now);nextAt.setDate(nextAt.getDate()+1)}
+ prayerNames.forEach(n=>{const c=$("card_"+n);if(c)c.classList.toggle("active",n===next)});
+ const ms=Math.max(0,nextAt-now),hh=Math.floor(ms/3600000),mm=Math.floor(ms%3600000/60000),ss=Math.floor(ms%60000/1000);
+ $("nextPrayer").textContent="Next prayer: "+next;
+ $("countdown").textContent=[hh,mm,ss].map(x=>String(x).padStart(2,"0")).join(":");
+}
+function updateClock(){$("currentClock").textContent=new Date().toLocaleTimeString();updateCountdown();checkReminder()}
+async function enableReminders(){
+ if(!("Notification" in window)){alert("This browser does not support notifications.");return}
+ const permission=await Notification.requestPermission();
+ if(permission==="granted"){localStorage.setItem("pt_reminders","yes");alert("Prayer reminders enabled. Keep the app open for scheduled reminders.");}
+ else alert("Notification permission was not granted.");
+}
+function checkReminder(){
+ if(!todayData||localStorage.getItem("pt_reminders")!=="yes"||!("Notification" in window)||Notification.permission!=="granted")return;
+ const now=new Date(),key=now.getFullYear()+"-"+now.getMonth()+"-"+now.getDate()+"-"+now.getHours()+"-"+now.getMinutes();
+ if(key===lastReminderKey)return;
+ const current=String(now.getHours()).padStart(2,"0")+":"+String(now.getMinutes()).padStart(2,"0");
+ for(const n of actualPrayers){if(cleanTime(todayData.timings[n])===current){lastReminderKey=key;new Notification("Prayer time: "+n,{body:n+" time has entered.",icon:"./icon-192.png"});break}}
+}
+function exportCalendar(){if(!monthlyData.length){alert("Load a location and calendar first.");return}window.print()}
+window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferredInstallPrompt=e;$("installBtn").hidden=false});
+$("installBtn").addEventListener("click",async()=>{
+ if(!deferredInstallPrompt){alert("Use your browser menu and choose Install app or Add to Home screen.");return}
+ deferredInstallPrompt.prompt();await deferredInstallPrompt.userChoice;deferredInstallPrompt=null;$("installBtn").hidden=true;
+});
+window.addEventListener("appinstalled",()=>{$("installBtn").hidden=true});
+if("serviceWorker" in navigator && location.protocol!=="file:"){window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(e=>console.log("Service worker:",e)))}
+restoreSettings();if(locationData){showLocation();loadAll()}
+setInterval(updateClock,1000);
+</script>
+<style>
+@media print{
+ header .header-actions,button,.controls,.note,footer{display:none!important}
+ body{background:#fff}.panel{box-shadow:none;break-inside:avoid;padding:8px;margin:0 0 12px}
+ main{max-width:none;padding:0}.table-wrap{overflow:visible}
+ table{min-width:0;font-size:9px}th,td{padding:5px 3px}
+}
+</style>
+</body>
+</html>
