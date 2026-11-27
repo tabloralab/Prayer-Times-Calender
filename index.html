@@ -9,50 +9,59 @@
 <link rel="manifest" href="./manifest.json">
 <link rel="icon" href="./icon-192.png">
 <style>
-:root{--navy:#142c42;--navy-2:#0f2234;--green:#16866b;--light:#f2f6f5;--white:#fff;--text:#263746;--muted:#82909b;--border:#e5ebeb}
+:root{--navy:#142c42;--green:#16866b;--light:#f2f6f5;--white:#fff;--text:#263746;--muted:#82909b;--border:#e5ebeb}
 *{box-sizing:border-box}body{margin:0;background:var(--light);color:var(--text);font-family:Arial,sans-serif}
-header{background:linear-gradient(135deg,var(--navy),var(--navy-2));color:#fff;padding:22px 16px 74px}.header-inner,main{max-width:1150px;margin:auto}
-.header-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}.location-badge{display:flex;flex-direction:column;align-items:flex-start;gap:3px;max-width:min(560px,100%);padding:11px 14px;border:1px solid #ffffff24;border-radius:12px;background:#ffffff12}.eyebrow{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#b9d4cf;font-weight:bold}.location-badge strong{font-size:16px}.location-badge span:last-child{font-size:12px;color:#c9d8e1}
-.header-title{text-align:center;margin:22px auto 0}.brand{font-size:clamp(26px,4vw,38px);font-weight:bold}.subtitle{font-size:12px;color:#c4d4df;margin-top:7px}
-.header-install{background:#fff;color:var(--navy);border:0;white-space:nowrap}
-main{padding:18px}.panel{background:#fff;border:1px solid #edf2f1;border-radius:15px;padding:18px;margin-bottom:18px;box-shadow:0 2px 9px #00000008}.location-panel{margin-top:-56px;box-shadow:0 14px 28px #142c4214}.panel-heading{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}.button-pair{display:flex;gap:8px;flex-wrap:wrap}.date-info{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}.section-title{font-size:19px;font-weight:bold}.small,.status{color:var(--muted);font-size:12px;margin-top:5px}
-button,select,input{font:inherit;border:1px solid var(--border);border-radius:8px;padding:10px;background:#fff}button{cursor:pointer;background:var(--green);color:#fff;border:0;font-weight:bold}button.secondary{background:#eaf3f0;color:var(--green)}button:disabled{opacity:.5;cursor:not-allowed}.controls{display:flex;flex-wrap:wrap;gap:9px;margin-top:15px}.controls input{flex:1;min-width:125px}
-.prayer-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-top:18px}.prayer{text-align:center;background:#f4f8f7;padding:16px 5px;border-radius:10px;border:1px solid transparent}.prayer.active{background:#e2f4ed;border-color:var(--green)}.prayer .name{font-size:13px;color:#64747d}.prayer .time{font-size:18px;font-weight:bold;margin-top:10px}
-.next-box{margin-top:16px;background:var(--navy);color:#fff;padding:15px;border-radius:10px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}.next-box .small{color:#b9d4cf}.month-title{font-size:17px;font-weight:bold}.calendar-head{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}.calendar-head+.calendar-head{margin-top:10px;padding-top:12px;border-top:1px solid var(--border)}
-.table-wrap{overflow-x:auto;margin-top:14px}table{width:100%;min-width:800px;border-collapse:collapse;font-size:13px}th{background:var(--navy);color:#fff;padding:12px 9px;text-align:center;white-space:nowrap}td{padding:11px 8px;text-align:center;border-bottom:1px solid var(--border);white-space:nowrap}tr.today{background:#e6f5ee;font-weight:bold}tr:hover{background:#f4f8f7}
-.settings-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:16px}.field label{display:block;font-size:12px;margin-bottom:6px;color:#687983}.field input,.field select{width:100%}.note{background:#fff8e8;border-left:3px solid #d9a441;padding:11px;border-radius:6px;font-size:12px;line-height:1.5;margin-top:12px}footer{text-align:center;padding:20px;color:var(--muted);font-size:12px}
-@media(max-width:700px){header{padding:16px 12px 64px}.header-title{margin-top:18px}.location-badge{width:100%}.header-top{flex-direction:column}.header-install{align-self:flex-end}main{padding:12px}.location-panel{margin-top:-44px;padding:14px}.button-pair{width:100%}.button-pair button{flex:1}.prayer-grid{grid-template-columns:repeat(3,1fr)}.prayer .time{font-size:17px}.settings-grid{grid-template-columns:1fr}.panel{padding:14px}.controls button{width:100%}}
-@media(max-width:420px){.prayer-grid{grid-template-columns:repeat(2,1fr)}.header-title{text-align:center}.brand{font-size:25px}}
+header{background:var(--navy);color:#fff;padding:18px 16px}.header-inner,main{max-width:1150px;margin:auto}
+.header-inner{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:14px}
+.hdr-left{text-align:left;min-width:0}.hdr-center{text-align:center}.hdr-right{text-align:right}
+.hdr-loc-name{font-size:16px;font-weight:bold;overflow-wrap:anywhere}.hdr-loc-coords{font-size:12px;color:#c4d4df;margin-top:4px}
+.brand{font-size:23px;font-weight:bold}.subtitle{font-size:12px;color:#c4d4df;margin-top:5px}
+.hdr-right:has(#installBtn[hidden]){visibility:hidden}
+.action-row{display:flex;gap:10px;flex-wrap:wrap;max-width:560px}.action-row button{flex:1 1 130px;padding:10px 6px}
+main{padding:18px}.panel{background:#fff;border-radius:13px;padding:18px;margin-bottom:18px;box-shadow:0 2px 9px #00000008}
+.date-info,.calendar-head{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.small,.status{color:var(--muted);font-size:12px;margin-top:5px}
+button,select,input{font:inherit;border:1px solid var(--border);border-radius:8px;padding:10px;background:#fff}
+button{cursor:pointer;background:var(--green);color:#fff;border:0}button.secondary{background:#eaf3f0;color:var(--green)}
+button:disabled{opacity:.5;cursor:not-allowed}.controls{display:flex;flex-wrap:wrap;gap:9px;margin-top:15px}.action-row+.controls{margin-top:12px}
+.controls input{flex:1;min-width:125px}.date-info{margin-top:18px;padding-top:15px;border-top:1px solid var(--border)}
+.prayer-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-top:18px}
+.prayer{text-align:center;background:#f4f8f7;padding:16px 5px;border-radius:10px;border:1px solid transparent}
+.prayer.active{background:#e2f4ed;border-color:var(--green)}.prayer .name{font-size:13px;color:#64747d}
+.prayer .time{font-size:18px;font-weight:bold;margin-top:10px}.next-box{margin-top:16px;background:var(--navy);color:#fff;padding:15px;border-radius:10px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.next-box .small{color:#b9d4cf}.section-title{font-size:19px;font-weight:bold}.month-title{font-size:17px;font-weight:bold}
+.table-wrap{overflow-x:auto}table{width:100%;min-width:780px;border-collapse:collapse;font-size:13px}
+th{background:var(--navy);color:#fff;padding:12px 9px;text-align:center;white-space:nowrap}
+td{padding:11px 8px;text-align:center;border-bottom:1px solid var(--border);white-space:nowrap}
+tr.today{background:#e6f5ee;font-weight:bold}tr:hover{background:#f4f8f7}
+.settings-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:16px}
+.field label{display:block;font-size:12px;margin-bottom:6px;color:#687983}.field input,.field select{width:100%}
+.note{background:#fff8e8;border-left:3px solid #d9a441;padding:11px;border-radius:6px;font-size:12px;line-height:1.5;margin-top:12px}
+footer{text-align:center;padding:20px;color:var(--muted);font-size:12px}
+@media(max-width:700px){.header-inner{grid-template-columns:1fr;gap:10px}.hdr-center{order:1}.hdr-left{order:2;text-align:center}.hdr-right{order:3;text-align:center}.hdr-right:has(#installBtn[hidden]){display:none}.action-row{max-width:none}main{padding:12px}.prayer-grid{grid-template-columns:repeat(3,1fr)}.prayer .time{font-size:17px}.settings-grid{grid-template-columns:1fr}.panel{padding:14px}}
 </style>
 </head>
 <body>
 <header>
  <div class="header-inner">
-  <div class="header-top">
-   <div class="location-badge" aria-live="polite">
-    <span class="eyebrow">Current location</span>
-    <strong id="headerLocation">Jubail, Saudi Arabia</strong>
-    <span id="headerCoordinates">27.00070, 49.65322</span>
-   </div>
-   <button id="installBtn" class="header-install" hidden>＋ Install App</button>
+  <div class="hdr-left">
+   <div class="hdr-loc-name" id="locationName">📍 Location not selected</div>
+   <div class="hdr-loc-coords" id="coordinates">Detect your location or search for a city.</div>
   </div>
-  <div class="header-title">
+  <div class="hdr-center">
    <div class="brand">☪ Prayer Times Calendar</div>
    <div class="subtitle">Daily prayer schedule · Monthly calendar · Hanafi &amp; Hanbali</div>
+  </div>
+  <div class="hdr-right">
+   <button id="installBtn" class="secondary" hidden>＋ Install App</button>
   </div>
  </div>
 </header>
 <main>
- <section class="panel location-panel">
-  <div class="panel-heading">
-   <div>
-    <div class="section-title">Location</div>
-    <div class="small">Use GPS, search for a city, or enter exact coordinates below.</div>
-   </div>
-   <div class="button-pair">
-    <button onclick="detectLocation()">◎ Detect Location</button>
-    <button class="secondary" onclick="exportCalendar()">📄 Export / Print PDF</button>
-   </div>
+ <section class="panel no-print">
+  <div class="action-row">
+   <button onclick="detectLocation()">◎ Detect Location</button>
+   <button class="secondary" onclick="exportCalendar()">📄 Export / Print PDF</button>
   </div>
   <div class="controls">
    <input id="cityInput" placeholder="City e.g. Jubail" autocomplete="address-level2">
@@ -82,20 +91,20 @@ button,select,input{font:inherit;border:1px solid var(--border);border-radius:8p
    <div><button class="secondary" onclick="changeMonth(-1)">❮</button> <button class="secondary" onclick="changeMonth(1)">❯</button></div>
   </div>
   <div class="calendar-head">
-   <div class="month-title" id="monthTitle">Loading…</div>
+   <div class="month-title" id="monthTitle">Select a location</div>
    <button class="secondary" onclick="goToday()">Today</button>
   </div>
   <div class="table-wrap">
    <table id="calendarTable">
     <thead><tr><th>Gregorian Date</th><th>Hijri Date</th><th>Fajr</th><th>Sunrise</th><th>Dhuhr</th><th>Asr</th><th>Maghrib</th><th>Isha</th></tr></thead>
-    <tbody id="calendarBody"><tr><td colspan="8">Loading prayer calendar…</td></tr></tbody>
+    <tbody id="calendarBody"><tr><td colspan="8">Select a location to load the calendar.</td></tr></tbody>
    </table>
   </div>
   <div class="status" id="calendarStatus"></div>
  </section>
 
- <section class="panel">
-  <div class="section-title">Calculation & Location Settings</div>
+ <section class="panel no-print">
+  <div class="section-title">Calculation &amp; Location Settings</div>
   <div class="settings-grid">
    <div class="field"><label>Asr calculation</label><select id="schoolSelect" onchange="settingsChanged()"><option value="1">Hanafi (two shadow lengths)</option><option value="0">Hanbali / Standard (one shadow length)</option></select></div>
    <div class="field"><label>Regional calculation method</label><select id="methodSelect" onchange="settingsChanged()">
@@ -105,7 +114,7 @@ button,select,input{font:inherit;border:1px solid var(--border);border-radius:8p
    <div class="field"><label>Longitude</label><input id="longitude" type="number" step="any" placeholder="Longitude"></div>
   </div>
   <div class="controls"><button onclick="applyCoordinates()">Apply Coordinates</button><button class="secondary" onclick="resetSettings()">Reset Settings</button></div>
-  <div class="note"><b>Prayer-time note:</b> Browser-based prayer times depend on the selected calculation method and internet access. Confirm important times with your local mosque or official timetable.</div>
+  <div class="note"><b>Please note:</b> Confirm prayer times with your local mosque or official timetable before relying on them for worship.</div>
   <div class="status" id="status">Ready.</div>
  </section>
 </main>
@@ -113,7 +122,6 @@ button,select,input{font:inherit;border:1px solid var(--border);border-radius:8p
 
 <script>
 const API="https://api.aladhan.com/v1";
-const defaultLocation={lat:27.00070,lon:49.65322,name:"Jubail, Saudi Arabia"};
 const prayerNames=["Fajr","Sunrise","Dhuhr","Asr","Maghrib","Isha"];
 const actualPrayers=["Fajr","Dhuhr","Asr","Maghrib","Isha"];
 let locationData=null,monthlyData=[],todayData=null;
@@ -122,6 +130,7 @@ let deferredInstallPrompt=null;
 
 const $=id=>document.getElementById(id);
 function status(msg){$("status").textContent=msg}
+function titleCase(t){return t.toLowerCase().replace(/(^|[\s,-])(\p{L})/gu,(m,p,c)=>p+c.toUpperCase())}
 function cleanTime(v){return String(v||"").split(" ")[0].substring(0,5)}
 function formatTime(v){
  const p=cleanTime(v).split(":");if(p.length<2)return "--";
@@ -130,19 +139,16 @@ function formatTime(v){
 }
 function saveSettings(){localStorage.setItem("pt_school",$("schoolSelect").value);localStorage.setItem("pt_method",$("methodSelect").value)}
 function restoreSettings(){
+ localStorage.removeItem("pt_reminders"); // old setting, no longer used
+
  $("schoolSelect").value=localStorage.getItem("pt_school")||"1";
  $("methodSelect").value=localStorage.getItem("pt_method")||"auto";
- try{
-  const s=localStorage.getItem("pt_location");
-  locationData=s?JSON.parse(s):{...defaultLocation};
-  if(!Number.isFinite(locationData.lat)||!Number.isFinite(locationData.lon))locationData={...defaultLocation};
- }catch(e){localStorage.removeItem("pt_location");locationData={...defaultLocation}}
- saveLocation();showLocation();
+ try{const s=localStorage.getItem("pt_location");if(s){locationData=JSON.parse(s);showLocation()}}catch(e){localStorage.removeItem("pt_location")}
 }
 function saveLocation(){localStorage.setItem("pt_location",JSON.stringify(locationData))}
 function showLocation(){
- $("headerLocation").textContent=locationData.name;
- $("headerCoordinates").textContent=locationData.lat.toFixed(5)+", "+locationData.lon.toFixed(5);
+ $("locationName").textContent="📍 "+locationData.name;
+ $("coordinates").textContent=locationData.lat.toFixed(5)+", "+locationData.lon.toFixed(5);
  $("latitude").value=locationData.lat;$("longitude").value=locationData.lon;
 }
 function getParams(){
@@ -170,7 +176,7 @@ async function searchCity(){
  try{
   const r=await fetch("https://nominatim.openstreetmap.org/search?format=json&limit=1&q="+encodeURIComponent(city+", "+country));
   const d=await r.json();if(!d.length)throw Error("City not found.");
-  locationData={lat:Number(d[0].lat),lon:Number(d[0].lon),name:city+", "+country};saveLocation();showLocation();loadAll();
+  locationData={lat:Number(d[0].lat),lon:Number(d[0].lon),name:titleCase(city)+", "+titleCase(country)};saveLocation();showLocation();loadAll();
  }catch(e){status(e.message);alert(e.message)}
 }
 function applyCoordinates(){
@@ -178,7 +184,7 @@ function applyCoordinates(){
  if(!Number.isFinite(lat)||!Number.isFinite(lon)||lat < -90||lat > 90||lon < -180||lon > 180){alert("Enter valid latitude and longitude.");return}
  locationData={lat,lon,name:"Manual coordinates"};saveLocation();showLocation();loadAll();
 }
-function resetSettings(){if(!confirm("Reset saved location and calculation settings?"))return;localStorage.removeItem("pt_location");localStorage.removeItem("pt_school");localStorage.removeItem("pt_method");localStorage.removeItem("pt_reminders");location.reload()}
+function resetSettings(){if(!confirm("Reset saved location and calculation settings?"))return;localStorage.removeItem("pt_location");localStorage.removeItem("pt_school");localStorage.removeItem("pt_method");location.reload()}
 function settingsChanged(){saveSettings();if(locationData)loadAll()}
 async function loadAll(){
  if(!locationData){status("Detect your location or search for a city.");return}
@@ -200,7 +206,7 @@ function displayToday(){
   const time=document.createElement("div");time.className="time";time.textContent=formatTime(t[n]);
   card.append(label,time);grid.append(card);
  });
- $("todayStatus").textContent="Calculation method: "+(todayData.meta&&todayData.meta.method?todayData.meta.method.name:"API regional default");
+ $("todayStatus").textContent="Asr: "+($("schoolSelect").value==="1"?"Hanafi":"Hanbali / Standard")+" · Calculation method: "+(todayData.meta&&todayData.meta.method?todayData.meta.method.name:"API regional default");
  updateCountdown();
 }
 function displayCalendar(){
@@ -237,13 +243,15 @@ $("installBtn").addEventListener("click",async()=>{
 });
 window.addEventListener("appinstalled",()=>{$("installBtn").hidden=true});
 if("serviceWorker" in navigator && location.protocol!=="file:"){window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(e=>console.log("Service worker:",e)))}
-restoreSettings();loadAll();
+restoreSettings();if(locationData){showLocation();loadAll()}
 setInterval(updateClock,1000);
 </script>
 <style>
 @media print{
- header .header-install,button,.controls,.note,footer,.location-panel{display:none!important}
- body{background:#fff}.panel{box-shadow:none;break-inside:avoid;padding:8px;margin:0 0 12px;border:0}
+ *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+ .no-print,button,footer,.note{display:none!important}
+ body{background:#fff}header{padding:10px 14px}.header-inner{grid-template-columns:1fr auto 1fr}.hdr-right{display:none}
+ .panel{box-shadow:none;break-inside:avoid;padding:8px;margin:0 0 12px}
  main{max-width:none;padding:0}.table-wrap{overflow:visible}
  table{min-width:0;font-size:9px}th,td{padding:5px 3px}
 }
