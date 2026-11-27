@@ -22,7 +22,7 @@ A free, browser-based prayer times calendar with Hanafi and Hanbali/standard Asr
 ## Important limitations
 - Fresh prayer times require an internet connection and use the AlAdhan API.
 - The service worker caches the application shell, not live prayer-time API results.
-- Browser notification reminders in this version work while the app is open and running. They are not guaranteed after the app/browser is fully closed. Reliable background push notifications need a push service and server-side scheduling.
+- Prayer-time calculations require an internet connection and are refreshed when the app loads or settings change.
 - GPS generally requires HTTPS and user permission.
 - City search uses OpenStreetMap Nominatim. Please use it responsibly.
 - Confirm prayer times with a local mosque or official authority before relying on them for worship.
